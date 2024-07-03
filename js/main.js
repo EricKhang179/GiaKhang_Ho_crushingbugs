@@ -4,15 +4,32 @@ console.log("Javascript is connected");
 const theButtons = document.querySelectorAll("#buttonHolder img"),
     puzzleBoard = document.querySelector(".puzzle-board"),
     puzzlePieces = document.querySelectorAll(".puzzle-pieces img"),
-    dropZones = document.querySelectorAll(".drop-zone");
+    dropZones = document.querySelectorAll(".drop-zone"),
+    resetButton = document.querySelector('#resetBut'); //Fix bug#2: reset Button was created
 //store the dragged piece in a global variable
 //we will need it in the handleDrop function    
 let draggedPiece;
 
-function changeBGImage() {
-    //console.log("changeBGImage called");
-    //url('../images/backGround0.jpg');
-    puzzleBoard.style.backgroundImage = `url(images/backGround${this.id}.jpg)`
+function changeBGImage(e) {
+    console.log("Change BGImage called");
+    //Method 1
+    // console.log(this.id);
+    // background-image: url('../images/backGround0.jpg');
+    // puzzleBoard.style.backgroundImage = `url('./images/backGround${this.id}.jpg')`;
+
+    //Method 2
+    console.log("Changing background image to", e.currentTarget.id);
+    puzzleBoard.style.backgroundImage = `url('./images/backGround${e.currentTarget.id}.jpg')`;
+    
+    //Bug#2
+    const puzzleId = e.currentTarget.id;
+    const pieceNames = ['topLeft', 'topRight', 'bottomLeft', 'bottomRight'];
+    
+    puzzlePieces.forEach((piece, index) => {
+        piece.src = `./images/${pieceNames[index]}${puzzleId}.jpg`;
+    });
+
+    resetPieces();
 }
 
 function handleStartDrag() {
@@ -39,6 +56,11 @@ function handleDrop() {
     console.log(`Dropped piece into drop zone`);
 }
 
+function resetPieces() {
+    console.log("Resetting pieces to their original positions");
+    puzzlePieces.forEach(piece => document.querySelector('.puzzle-pieces').appendChild(piece));
+}
+
 //event Listeners
 theButtons.forEach(button => button.addEventListener("click", changeBGImage)); 
 
@@ -47,3 +69,6 @@ puzzlePieces.forEach(piece => piece.addEventListener("dragstart", handleStartDra
 dropZones.forEach(zone => zone.addEventListener("dragover", handleDragOver));
 
 dropZones.forEach(zone => zone.addEventListener("drop", handleDrop));
+
+//Add eventListener for bug#2
+resetButton.addEventListener('click', resetPieces);
