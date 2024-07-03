@@ -1,3 +1,5 @@
+console.log("Javascript is connected");
+
 //variables
 const theButtons = document.querySelectorAll("#buttonHolder img"),
     puzzleBoard = document.querySelector(".puzzle-board"),
@@ -25,12 +27,16 @@ function handleDragOver(e) {
     console.log("dragged over me");
 }
 
-function handleDrop(e) {
-    e.preventDefault();
-    console.log("dropped something on me");
-    //this line moves the dragged piece from the left side of the board
-    //into whatever dropzone we choose.
+//Fix bug#1 : One piece can be dropped into single drop zone.
+//An if statement was added to prevent it.
+function handleDrop() {
+    if (this.children.length > 0) {
+        console.log("Dropzone already has a piece. Drop action is prevented.");
+        return; // If there is already a piece in the dropzone, do not allow the another piece to be dropped.
+    }
+
     this.appendChild(draggedPiece);
+    console.log(`Dropped piece into drop zone`);
 }
 
 //event Listeners
